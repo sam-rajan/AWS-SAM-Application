@@ -1,0 +1,5 @@
+PAY1001    REF12345    Example Payer1    examplepayer1@mail.com    1000    12122020    SUCCESS
+PAY1002    REF12354    Example Payer2    examplepayer2@mail.com    200    12122020    FAILED
+PAY1003    REF12346    Example Payer1    examplepayer1@mail.com    2000    12122020    SUCCESS
+PAY1004    REF12347    Example Payer3    examplepayer3@mail.com    3000    12122020    PENDING
+PAY1005    REF12348    Example Payer2    examplepayer2@mail.com    1000    12122020    SUCCESS

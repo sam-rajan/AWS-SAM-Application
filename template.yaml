@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  payments-processor
+
+  Sample SAM Template for payments-processor
+  
+Globals:
+  Function:
+    Timeout: 10
+    Handler: app.lambdaHandler
+    Runtime: nodejs12.x
+
+Resources:
+  ReceiptExtractorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: receipt-extractor/
+      Events:
+        ReceiptExtractEvent:
+          Type: S3 
+          Properties:
+            Bucket: !Ref RecieptsBucket
+            Events: s3:ObjectCreated:*
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: hello-world/
+     
+  RecieptsBucket:
+    Type: AWS::S3::Bucket
+    BucketName: payment-reciepts
+      
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  HelloWorldFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt HelloWorldFunctionRole.Arn
