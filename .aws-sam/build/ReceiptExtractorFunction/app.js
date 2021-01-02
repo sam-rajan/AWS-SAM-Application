@@ -1,6 +1,5 @@
 const aws = require('aws-sdk');
 const s3 = new aws.S3({ apiVersion: '2006-03-01' });
-const sqs = new aws.SQS({apiVersion: '2012-11-05'});
 const readline = require('readline');
 
 exports.lambdaHandler = async (event, context) => {
@@ -73,7 +72,7 @@ async function sendExtractedPayment(payment) {
 
     let sqsPayload = {
         MessageBody: JSON.stringify(payment),
-        QueueUrl: process.env.QueueUrl
+        QueueUrl: my - queue - url
     };
     return new Promise((resolve, reject) => {
         await sqs.sendMessage(sqsPayload, function (err, data) {

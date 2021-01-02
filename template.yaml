@@ -2,34 +2,80 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   payments-processor
+  
+  Demonstration of AWS SAM application
 
-  Sample SAM Template for payments-processor
+Parameters:
+  RecieptsBucketName:
+    Type: String
+    Default: payments-receipts
+    Description: The name of S3 bucket where all the receipts are stored
+  PaymentsQueueName:
+    Type: String
+    Default: payments-fifo-queue
+    Description: Name of the payments queue
   
 Globals:
   Function:
     Timeout: 10
     Handler: app.lambdaHandler
     Runtime: nodejs12.x
+    
 
 Resources:
+#Functions 
+#----------------------------------------
   ReceiptExtractorFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: app-receipts-extractor
       CodeUri: receipt-extractor/
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref RecieptsBucketName
+        - SQSSendMessagePolicy:
+            QueueName: !Ref PaymentsQueueName
       Events:
-        ReceiptExtractEvent:
+        S3Event:
           Type: S3 
           Properties:
-            Bucket: !Ref RecieptsBucket
+            Bucket: !Ref ReceiptsBucket
             Events: s3:ObjectCreated:*
-  HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: hello-world/
-     
-  RecieptsBucket:
+      Environment:
+        Variables:
+          QueueUrl: !Ref PaymentsQueue
+
+#-----------------------------------------
+
+#Services
+#-----------------------------------------
+
+  ReceiptsBucket:
     Type: AWS::S3::Bucket
-    BucketName: payment-reciepts
+    Properties:
+      BucketName: !Ref RecieptsBucketName
+  PaymentsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref PaymentsQueueName
+      FifoQueue: true
+      ContentBasedDeduplication: true
+
+#----------------------------------------
+
+#Permissions and roles
+#----------------------------------------
+
+  S3TriggerReceiptExtractorPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref ReceiptExtractorFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !GetAtt ReceiptsBucket.Arn
+
+#----------------------------------------
+
       
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

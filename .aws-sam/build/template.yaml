@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'payments-processor
+
+  Sample SAM Template for payments-processor
+
+  '
+Parameters:
+  RecieptsBucketName:
+    Type: String
+    Default: payments-receipts
+Globals:
+  Function:
+    Timeout: 10
+    Handler: app.lambdaHandler
+    Runtime: nodejs12.x
+Resources:
+  ReceiptExtractorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: app-receipts-extractor
+      CodeUri: ReceiptExtractorFunction
+      Policies:
+      - S3ReadPolicy:
+          BucketName:
+            Ref: RecieptsBucketName
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+            Bucket:
+              Ref: ReceiptsBucket
+            Events: s3:ObjectCreated:*
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: HelloWorldFunction
+  ReceiptsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Ref: RecieptsBucketName
+  S3TriggerReceiptExtractorPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: ReceiptExtractorFunction
+      Principal: s3.amazonaws.com
+      SourceArn:
+        Fn::GetAtt:
+        - ReceiptsBucket
+        - Arn
+Outputs:
+  HelloWorldFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value:
+      Fn::GetAtt:
+      - HelloWorldFunctionRole
+      - Arn
