@@ -2,59 +2,87 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: 'payments-processor
 
-  Sample SAM Template for payments-processor
+  Demonstration of AWS SAM application
 
   '
 Parameters:
   RecieptsBucketName:
     Type: String
     Default: payments-receipts
+    Description: The name of S3 bucket where all the receipts are stored
+  PaymentsQueueName:
+    Type: String
+    Default: paymentsQueue.fifo
+    Description: Name of the payments queue
 Globals:
   Function:
     Timeout: 10
     Handler: app.lambdaHandler
     Runtime: nodejs12.x
 Resources:
-  ReceiptExtractorFunction:
+  ReceiptExtractorStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      Name: app-receipts-extractor
+      DefinitionUri: ../../state-machines/receipts-extractor.asl.json
+      DefinitionSubstitutions:
+        ReceiptsReadeArn:
+          Fn::GetAtt:
+          - ReceiptReaderFunction
+          - Arn
+        PaymentsProcessorArn:
+          Fn::GetAtt:
+          - PaymentsProcessorFunction
+          - Arn
+      Policies:
+      - LambdaInvokePolicy:
+          FunctionName:
+            Ref: ReceiptReaderFunction
+      - LambdaInvokePolicy:
+          FunctionName:
+            Ref: PaymentsProcessorFunction
+  ReceiptReaderFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: app-receipts-extractor
-      CodeUri: ReceiptExtractorFunction
+      FunctionName: app-receipt-reader
+      CodeUri: ReceiptReaderFunction
       Policies:
       - S3ReadPolicy:
           BucketName:
             Ref: RecieptsBucketName
-      Events:
-        S3Event:
-          Type: S3
-          Properties:
-            Bucket:
-              Ref: ReceiptsBucket
-            Events: s3:ObjectCreated:*
-  HelloWorldFunction:
+  PaymentsProcessorFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: HelloWorldFunction
+      FunctionName: app-payments-processor
+      CodeUri: PaymentsProcessorFunction
+      Environment:
+        Variables:
+          QueueUrl:
+            Ref: PaymentsQueue
+      Policies:
+      - SQSSendMessagePolicy:
+          QueueName:
+            Ref: PaymentsQueueName
   ReceiptsBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName:
         Ref: RecieptsBucketName
-  S3TriggerReceiptExtractorPermission:
-    Type: AWS::Lambda::Permission
+  PaymentsQueue:
+    Type: AWS::SQS::Queue
     Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Ref: ReceiptExtractorFunction
-      Principal: s3.amazonaws.com
-      SourceArn:
-        Fn::GetAtt:
-        - ReceiptsBucket
-        - Arn
+      QueueName:
+        Ref: PaymentsQueueName
+      FifoQueue: true
+      ContentBasedDeduplication: true
 Outputs:
-  HelloWorldFunctionIamRole:
-    Description: Implicit IAM Role created for Hello World function
+  ReceiptsBucket:
+    Description: Created Receipts Bucket Arn
     Value:
       Fn::GetAtt:
-      - HelloWorldFunctionRole
+      - ReceiptsBucket
       - Arn
+  PaymentsQueue:
+    Description: Payments Queue URL
+    Value:
+      Ref: PaymentsQueue

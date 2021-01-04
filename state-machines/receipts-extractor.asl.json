@@ -1,0 +1,17 @@
+{
+    "Comment": "Receipts extractor step function definition",
+    "StartAt": "Receipts-Reader",
+    "States": {
+        "Receipts-Reader" : {
+            "Type": "Task",
+            "Resource": "${ReceiptsReadeArn}",
+            "Next": "Payments-Processor"
+        },
+
+        "Payments-Processor" : {
+            "Type": "Task",
+            "Resource": "${PaymentsProcessorArn}",
+            "End": true
+        }
+    }
+}
