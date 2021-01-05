@@ -4,15 +4,13 @@ const readline = require('readline');
 
 exports.lambdaHandler = async (event, context) => {
 
-    console.log(event);
-
-    const s3Payload = event.Records[0].s3;
+    const s3Payload = event.detail.requestParameters;
     const payments = [];
 
     try {
         const params = {
-            Bucket: s3Payload.bucket.name,
-            Key: decodeURIComponent(s3Payload.object.key,replace(/\+/g, ' '))
+            Bucket: s3Payload.bucketName,
+            Key: s3Payload.key
         };
         const readStream = await s3.getObject(params).createReadStream();
 
@@ -44,3 +42,20 @@ exports.lambdaHandler = async (event, context) => {
 
     return payments;
 };
+
+
+function lineToObject(line) {
+    const tokens = line.split(/\s{4}/);
+
+    if (tokens.length < 7) return {};
+
+    return {
+        id: tokens[0],
+        reference: tokens[1],
+        payee: tokens[2],
+        email: tokens[3],
+        amount: tokens[4],
+        date: tokens[5],
+        status: tokens[6]
+    }
+}
