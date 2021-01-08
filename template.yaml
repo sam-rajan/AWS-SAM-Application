@@ -59,6 +59,8 @@ Resources:
             FunctionName: !Ref ReceiptReaderFunction
         - LambdaInvokePolicy:
             FunctionName: !Ref PaymentsProcessorFunction
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt AppErrorSnsTopic.TopicName
   ReceiptReaderFunction:
     Type: AWS::Serverless::Function
     Properties:
