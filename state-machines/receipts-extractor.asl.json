@@ -1,17 +1,50 @@
 {
     "Comment": "Receipts extractor step function definition",
-    "StartAt": "Receipts-Reader",
+    "StartAt": "Try",
     "States": {
-        "Receipts-Reader" : {
-            "Type": "Task",
-            "Resource": "${ReceiptsReadeArn}",
-            "Next": "Payments-Processor"
+        "Try": {
+            "Type": "Parallel",
+            "Branches": [
+                {
+                    "StartAt": "Receipts-Reader",
+                    "States": {
+                        "Receipts-Reader": {
+                            "Type": "Task",
+                            "Resource": "${ReceiptsReadeArn}",
+                            "Next": "Payments-Processor"
+                        },
+                        "Payments-Processor": {
+                            "Type": "Task",
+                            "Resource": "${PaymentsProcessorArn}",
+                            "End": true
+                        }
+                    }
+                }
+            ],
+            "Catch": [
+                {
+                    "ErrorEquals": [
+                        "States.ALL"
+                    ],
+                    "Next": "Error-Notify"
+                }
+            ],
+            "Next": "Job-Succeeded"
         },
-
-        "Payments-Processor" : {
+        "Job-Succeeded": {
+            "Type": "Succeed"
+        },
+        "Error-Notify": {
             "Type": "Task",
-            "Resource": "${PaymentsProcessorArn}",
-            "End": true
+            "Resource": "arn:aws:states:::sns:publish",
+            "Parameters": {
+                "TopicArn": "${ErrorTopicArn}",
+                "Message.$": "$"
+            },
+            "Next": "Fail-Workflow"
+        },
+        "Fail-Workflow": {
+            "Type": "Fail"
         }
     }
 }

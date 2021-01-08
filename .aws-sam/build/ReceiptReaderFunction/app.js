@@ -7,6 +7,8 @@ exports.lambdaHandler = async (event, context) => {
     const s3Payload = event.detail.requestParameters;
     const payments = [];
 
+    throw new Error('Required');
+
     try {
         const params = {
             Bucket: s3Payload.bucketName,

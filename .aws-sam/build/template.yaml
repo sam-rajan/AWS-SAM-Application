@@ -53,6 +53,8 @@ Resources:
           Fn::GetAtt:
           - PaymentsProcessorFunction
           - Arn
+        ErrorTopicArn:
+          Ref: AppErrorSnsTopic
       Policies:
       - LambdaInvokePolicy:
           FunctionName:
@@ -99,6 +101,14 @@ Resources:
         Ref: PaymentsQueueName
       FifoQueue: true
       ContentBasedDeduplication: true
+  AppErrorSnsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      FifoTopic: false
+      Subscription:
+      - Endpoint: samjerusalem@gmail.com
+        Protocol: email-json
+      TopicName: AppErrorNotifier
   S3EventCloudTrail:
     Type: AWS::CloudTrail::Trail
     DependsOn:

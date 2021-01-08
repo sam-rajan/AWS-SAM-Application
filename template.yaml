@@ -30,7 +30,6 @@ Globals:
 Resources:
 #Functions 
 #----------------------------------------
-
   ReceiptExtractorStateMachine:
     Type: AWS::Serverless::StateMachine
     Properties:
@@ -54,12 +53,12 @@ Resources:
       DefinitionSubstitutions:
         ReceiptsReadeArn: !GetAtt ReceiptReaderFunction.Arn
         PaymentsProcessorArn: !GetAtt PaymentsProcessorFunction.Arn
+        ErrorTopicArn: !Ref AppErrorSnsTopic
       Policies:
         - LambdaInvokePolicy:
             FunctionName: !Ref ReceiptReaderFunction
         - LambdaInvokePolicy:
             FunctionName: !Ref PaymentsProcessorFunction
-
   ReceiptReaderFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -68,7 +67,6 @@ Resources:
       Policies:
         - S3ReadPolicy:
             BucketName: !Ref RecieptsBucketName
-  
   PaymentsProcessorFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -85,7 +83,6 @@ Resources:
 
 #Services
 #-----------------------------------------
-
   ReceiptsBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -100,6 +97,14 @@ Resources:
       QueueName: !Ref PaymentsQueueName
       FifoQueue: true
       ContentBasedDeduplication: true
+  AppErrorSnsTopic:
+    Type: AWS::SNS::Topic
+    Properties: 
+      FifoTopic: false
+      Subscription: 
+        - Endpoint: samjerusalem@gmail.com
+          Protocol: email-json
+      TopicName: AppErrorNotifier
   S3EventCloudTrail: 
     Type: AWS::CloudTrail::Trail
     DependsOn: 
@@ -121,7 +126,6 @@ Resources:
 
 # Permissions, roles and policies
 #----------------------------------------
-
   # S3TriggerReceiptExtractorPermission:
   #   Type: AWS::Lambda::Permission
   #   Properties:
