@@ -7,8 +7,6 @@ exports.lambdaHandler = async (event, context) => {
     const s3Payload = event.detail.requestParameters;
     const payments = [];
 
-    throw new Error('Required');
-
     try {
         const params = {
             Bucket: s3Payload.bucketName,
@@ -49,7 +47,8 @@ exports.lambdaHandler = async (event, context) => {
 function lineToObject(line) {
     const tokens = line.split(/\s{4}/);
 
-    if (tokens.length < 7) return {};
+    if (tokens.length < 7) 
+        throw new Error('Invalid input' + line);
 
     return {
         id: tokens[0],

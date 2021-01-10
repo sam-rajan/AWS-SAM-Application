@@ -2,7 +2,6 @@ const aws = require('aws-sdk');
 const sqs = new aws.SQS({apiVersion: '2012-11-05'});
 
 exports.lambdaHandler = async (event, context) => {
-    console.log(event);
     await Promise.all(event.map(item => sendExtractedPayment(item)));
 };
 

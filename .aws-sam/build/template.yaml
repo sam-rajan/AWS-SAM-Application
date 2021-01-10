@@ -18,6 +18,10 @@ Parameters:
     Type: String
     Default: payments-receipts-cloudtrail-event-bucket
     Description: Name of the cloud trail log buckets
+  ErrorEmailAddress:
+    Type: String
+    Default: samjerusalem@gmail.com
+    Description: Email address for notifying function errors
 Globals:
   Function:
     Timeout: 10
@@ -111,7 +115,8 @@ Resources:
     Properties:
       FifoTopic: false
       Subscription:
-      - Endpoint: samjerusalem@gmail.com
+      - Endpoint:
+          Ref: ErrorEmailAddress
         Protocol: email-json
       TopicName: AppErrorNotifier
   S3EventCloudTrail:

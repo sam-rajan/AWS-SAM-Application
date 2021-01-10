@@ -10,7 +10,7 @@ exports.lambdaHandler = async (event, context) => {
 async function sendExtractedPayment(payment) {
     if (payment.id === undefined)
         return Promise.resolve();
-
+        
     let sqsPayload = {
         MessageBody: JSON.stringify(payment),
         QueueUrl: process.env.QueueUrl,
