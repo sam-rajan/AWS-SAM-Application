@@ -5,8 +5,11 @@ class PaymentSender {
     }
 
     async sendExtractedPayment(payment) {
-        if (payment.id === undefined)
+        if (payment.id === undefined) {
             return Promise.resolve();
+            console.log("Invalid Payment, skipping");
+        }
+            
 
         let sqsPayload = {
             MessageBody: JSON.stringify(payment),
@@ -14,10 +17,11 @@ class PaymentSender {
             MessageGroupId: payment.id
         };
         return new Promise((resolve, reject) => {
-            sqs.sendMessage(sqsPayload, function (err, data) {
+            this.sqs.sendMessage(sqsPayload, function (err, data) {
                 if (err) {
                     reject("Failed to post to SQS. Error:" + err);
                 } else {
+                    console.log("submitted");
                     resolve("Message send, Id:" + data.MessageId);
                 }
             });

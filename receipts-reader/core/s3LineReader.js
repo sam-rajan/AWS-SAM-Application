@@ -1,15 +1,15 @@
 class S3LineReader {
 
-    constructor(s3, readLine) {
+    constructor(s3, reader) {
         this.s3 = s3;
-        this.readLine = readLine;
+        this.reader = reader;
     }
 
-    readLine(params) {
+    async readLineFromS3(params) {
         const lines = [];
         try {
             const readStream = await this.s3.getObject(params).createReadStream();
-            const lineReader = this.readline.createInterface({
+            const lineReader = this.reader.createInterface({
                 input: readStream,
                 terminal: false
             });
