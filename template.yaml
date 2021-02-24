@@ -43,7 +43,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: app-receipt-reader
-      CodeUri: receipts-reader/
+      CodeUri: functions/receipts-reader/
       Policies:
         - S3ReadPolicy:
             BucketName: !Ref RecieptsBucketName
@@ -51,7 +51,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: app-payments-processor
-      CodeUri: payments-processor/
+      CodeUri: functions/payments-processor/
       Environment:
         Variables:
           QueueUrl: !Ref PaymentsQueue
@@ -62,7 +62,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: app-payments-persistor
-      CodeUri: payments-persistor/
+      CodeUri: functions/payments-persistor/
       Events:
         PaymentsQueueEvent:
           Type: SQS
