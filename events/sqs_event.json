@@ -1,0 +1,22 @@
+{
+    "Records": [
+        {
+            "messageId": "45fb6832-4ba0-4d73-bee7-7198106fbaa9",
+            "body": "{\"id\":\"PAY1005\",\"reference\":\"REF12348\",\"payee\":\"Example Payer2\",\"email\":\"examplepayer2@mail.com\",\"amount\":\"1000\",\"date\":\"12122020\",\"status\":\"SUCCESS\"}",
+            "attributes": {
+                "ApproximateReceiveCount": "1",
+                "SentTimestamp": "1614120919334",
+                "SequenceNumber": "18859959029059057664",
+                "MessageGroupId": "PAY1005",
+                "SenderId": "AROA3MYCBSG2NINIEEQNG:app-payments-processor",
+                "MessageDeduplicationId": "5bdf07da04f0152f8a383abe9a746595b907953e9fea4f59490abb8acc1dabac",
+                "ApproximateFirstReceiveTimestamp": "1614120919334"
+            },
+            "messageAttributes": {},
+            "md5OfBody": "da91d089cf83f9f5fee2ba3ded327dae",
+            "eventSource": "aws:sqs",
+            "eventSourceARN": "arn:aws:sqs:us-east-1:783298957748:paymentsQueue.fifo",
+            "awsRegion": "us-east-1"
+        }
+    ]
+}

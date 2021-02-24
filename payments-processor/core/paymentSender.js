@@ -6,8 +6,8 @@ class PaymentSender {
 
     async sendExtractedPayment(payment) {
         if (payment.id === undefined) {
-            return Promise.resolve();
             console.log("Invalid Payment, skipping");
+            return Promise.resolve();
         }
             
 

@@ -22,6 +22,10 @@ Parameters:
     Type: String
     Default: samjerusalem@gmail.com
     Description: Email address for notifying function errors
+  PaymentsTableName:
+    Type: String
+    Default: payments
+    Description: Database where payments are persisted
 
   
 Globals:
@@ -34,6 +38,49 @@ Globals:
 Resources:
 #Functions 
 #----------------------------------------
+  
+  ReceiptReaderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: app-receipt-reader
+      CodeUri: receipts-reader/
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref RecieptsBucketName
+  PaymentsProcessorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: app-payments-processor
+      CodeUri: payments-processor/
+      Environment:
+        Variables:
+          QueueUrl: !Ref PaymentsQueue
+      Policies:
+        - SQSSendMessagePolicy:
+            QueueName: !Ref PaymentsQueueName
+  PaymentsPersistorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: app-payments-persistor
+      CodeUri: payments-persistor/
+      Events:
+        PaymentsQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt PaymentsQueue.Arn
+            BatchSize: 10
+      Policies:
+        DynamoDBCrudPolicy:
+          TableName: !Ref PaymentsDB
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref PaymentsTableName
+
+            
+#-----------------------------------------
+
+#Services
+#-----------------------------------------
   ReceiptExtractorStateMachine:
     Type: AWS::Serverless::StateMachine
     Properties:
@@ -65,30 +112,6 @@ Resources:
             FunctionName: !Ref PaymentsProcessorFunction
         - SNSPublishMessagePolicy:
             TopicName: !GetAtt AppErrorSnsTopic.TopicName
-  ReceiptReaderFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: app-receipt-reader
-      CodeUri: receipts-reader/
-      Policies:
-        - S3ReadPolicy:
-            BucketName: !Ref RecieptsBucketName
-  PaymentsProcessorFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: app-payments-processor
-      CodeUri: payments-processor/
-      Environment:
-        Variables:
-          QueueUrl: !Ref PaymentsQueue
-      Policies:
-        - SQSSendMessagePolicy:
-            QueueName: !Ref PaymentsQueueName
-
-#-----------------------------------------
-
-#Services
-#-----------------------------------------
   ReceiptsBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -127,7 +150,29 @@ Resources:
               Values: 
                 - !Sub arn:aws:s3:::${RecieptsBucketName}/
       IncludeGlobalServiceEvents: false
-
+  PaymentsDB:
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions:
+        - 
+          AttributeName: "id"
+          AttributeType: "S"
+        -
+          AttributeName: "date"
+          AttributeType: "S"
+      KeySchema:
+        - 
+          AttributeName: "id"
+          KeyType: "HASH"
+        -
+          AttributeName: "date"
+          KeyType: "RANGE"   
+      BillingMode: PROVISIONED
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+      TableName: !Ref PaymentsTableName
+          
 #----------------------------------------
 
 # Permissions, roles and policies
@@ -175,4 +220,6 @@ Outputs:
   PaymentsQueue:
     Description: "Payments Queue URL"
     Value: !Ref PaymentsQueue
-
+  PaymentsDB:
+    Description: "Payments Database Arn"
+    Value: !GetAtt PaymentsDB.Arn

@@ -10,3 +10,8 @@ functions = ["ReceiptReaderFunction"]
 codeuri = "payments-processor/"
 runtime = "nodejs12.x"
 functions = ["PaymentsProcessorFunction"]
+
+[build_definitions.2c5c5eba-3384-4e6b-8f78-a2331233cd98]
+codeuri = "payments-persistor/"
+runtime = "nodejs12.x"
+functions = ["PaymentsPersistorFunction"]
