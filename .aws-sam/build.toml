@@ -15,3 +15,13 @@ functions = ["PaymentsProcessorFunction"]
 codeuri = "functions/payments-persistor/"
 runtime = "nodejs12.x"
 functions = ["PaymentsPersistorFunction"]
+
+[build_definitions.0d28c558-8fbe-4403-82ff-7c3691f408b6]
+codeuri = "functions/payments-notifier/"
+runtime = "nodejs12.x"
+functions = ["PaymentsNotifierFunction"]
+
+[build_definitions.2cbd5bd9-5153-46dc-ae17-17630c2bedd1]
+codeuri = "functions/payment-retriever/"
+runtime = "nodejs12.x"
+functions = ["PaymentsRetrieverFunction"]

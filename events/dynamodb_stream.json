@@ -1,0 +1,49 @@
+{
+    "Records": [
+        {
+            "eventID": "746707ac2a26fbb11ec3e400c773cfcc",
+            "eventName": "INSERT",
+            "eventVersion": "1.1",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-east-1",
+            "dynamodb": {
+                "ApproximateCreationDateTime": 1614212374,
+                "Keys": {
+                    "date": {
+                        "S": "12122020"
+                    },
+                    "id": {
+                        "S": "PAY1004"
+                    }
+                },
+                "NewImage": {
+                    "date": {
+                        "S": "12122020"
+                    },
+                    "payee": {
+                        "S": "Example Payer3"
+                    },
+                    "reference": {
+                        "S": "REF12347"
+                    },
+                    "amount": {
+                        "S": "3000"
+                    },
+                    "id": {
+                        "S": "PAY1004"
+                    },
+                    "email": {
+                        "S": "examplepayer3@mail.com"
+                    },
+                    "status": {
+                        "S": "PENDING"
+                    }
+                },
+                "SequenceNumber": "4626500000000089321962609",
+                "SizeBytes": 128,
+                "StreamViewType": "NEW_IMAGE"
+            },
+            "eventSourceARN": ""
+        }
+    ]
+}

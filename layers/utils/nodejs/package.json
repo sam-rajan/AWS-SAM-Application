@@ -1,0 +1,17 @@
+{
+  "name": "utils",
+  "version": "1.0.0",
+  "description": "Layer contains utility and helper functions",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/ontimeits/ontime-notification-system.git"
+  },
+  "author": "Sam Rajan",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/ontimeits/ontime-notification-system#readme",
+  "dependencies": {
+  }
+}

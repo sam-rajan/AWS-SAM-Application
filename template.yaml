@@ -75,8 +75,54 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref PaymentsTableName
+  PaymentsNotifierFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: app-payments-notifier
+      CodeUri: functions/payments-notifier/
+      Layers:
+        - !Ref UtilsLayer
+      Events:
+        Stream:
+          Type: DynamoDB
+          Properties:
+            Stream: !GetAtt PaymentsDB.StreamArn
+            BatchSize: 100
+            StartingPosition: TRIM_HORIZON
+  PaymentsRetrieverFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: app-payments-retriever
+      CodeUri: functions/payment-retriever/
+      Layers:
+        - !Ref UtilsLayer
+      Policies:
+        DynamoDBReadPolicy:
+          TableName: !Ref PaymentsDB
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref PaymentsTableName
+      Events:
+        HttpPost:
+          Type: Api
+          Properties:
+            Path: '/payments'
+            Method: get
 
-            
+#Layers 
+#----------------------------------------
+
+  UtilsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: Utils
+      Description: Utilities and other helper functions
+      ContentUri: layers/utils/
+      CompatibleRuntimes:
+        - nodejs12.x
+        - nodejs8.10
+      RetentionPolicy: Retain
+
 #-----------------------------------------
 
 #Services
@@ -172,6 +218,8 @@ Resources:
         ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"
       TableName: !Ref PaymentsTableName
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
           
 #----------------------------------------
 
