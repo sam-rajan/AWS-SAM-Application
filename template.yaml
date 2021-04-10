@@ -33,6 +33,9 @@ Globals:
     Timeout: 10
     Handler: app.lambdaHandler
     Runtime: nodejs12.x
+    AutoPublishAlias: live
+    DeploymentPreference:
+      Type: Canary10Percent10Minutes 
     
 
 Resources:
@@ -103,7 +106,7 @@ Resources:
         Variables:
           TABLE_NAME: !Ref PaymentsTableName
       Events:
-        HttpPost:
+        HttpGet:
           Type: Api
           Properties:
             Path: '/payments'
