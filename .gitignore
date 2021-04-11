@@ -104,3 +104,4 @@ dist
 .tern-port
 
 .aws-sam/build/*
+.aws-sam
