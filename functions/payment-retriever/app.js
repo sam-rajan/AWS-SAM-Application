@@ -7,6 +7,5 @@ const dynamoDbUnmarshaller = new DynamoDbUnmarshaller(aws);
 const dynamoDbRetrievier = new DynamoDbRetriever(ddb);
 
 exports.lambdaHandler = async (event, context) => {
-    console.log(process.env.TABLE_NAME);
     return await dynamoDbRetrievier.readAllData(process.env.TABLE_NAME);
 }
