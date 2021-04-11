@@ -1,5 +1,5 @@
-
-const DynamoDbUnmarshaller = require('/opt/nodejs/dataUnmarshaller');
+"use strict";
+const DynamoDbUnmarshaller = require('/opt/nodejs/dynamo-data-unmarshaller');
 const SesMailSender = require('./core/sesMailSender');
 const EmailHelper = require('./core/emailHelper');
 const aws = require('aws-sdk');

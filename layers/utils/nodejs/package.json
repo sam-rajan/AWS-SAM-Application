@@ -7,11 +7,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://bitbucket.org/ontimeits/ontime-notification-system.git"
+    "url": "https://github.com/sam-rajan/AWS-SAM-Application.git"
   },
   "author": "Sam Rajan",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/ontimeits/ontime-notification-system#readme",
+  "homepage": "https://github.com/sam-rajan/AWS-SAM-Application.git",
   "dependencies": {
   }
 }

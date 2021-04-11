@@ -4,7 +4,6 @@ class DynamoDbRetriever {
         this.dynamoDb = dynamoDb;
     }
 
-
     async readAllData(tableName) {
         var params = {
             TableName: tableName,

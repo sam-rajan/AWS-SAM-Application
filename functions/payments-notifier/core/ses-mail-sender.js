@@ -1,5 +1,3 @@
-
-
 class SesMailSender {
 
     constructor(ses) {

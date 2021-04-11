@@ -1,5 +1,4 @@
-class EmailHelper {
-    
+class EmailHelper { 
     shouldNotify(data) {
         return data.status in StatusToNotify;
     }

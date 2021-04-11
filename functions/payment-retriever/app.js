@@ -1,6 +1,6 @@
-
-const DynamoDbUnmarshaller = require('/opt/nodejs/dataUnmarshaller');
-const DynamoDbRetriever = require('./core/dynamodbRetrievier');
+"use strict";
+const DynamoDbUnmarshaller = require('/opt/nodejs/dynamo-data-unmarshaller');
+const DynamoDbRetriever = require('./core/dynamo-db-retrievier');
 const aws = require('aws-sdk');
 const ddb = new aws.DynamoDB.DocumentClient();
 const dynamoDbUnmarshaller = new DynamoDbUnmarshaller(aws);

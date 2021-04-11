@@ -1,5 +1,4 @@
 "use strict";
-
 const DynamoDbPersistor = require('./core/dynamoDbPersistor');
 const aws = require('aws-sdk');
 const ddb = new aws.DynamoDB.DocumentClient();

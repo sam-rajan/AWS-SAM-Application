@@ -21,7 +21,6 @@ class PaymentSender {
                 if (err) {
                     reject("Failed to post to SQS. Error:" + err);
                 } else {
-                    console.log("submitted");
                     resolve("Message send, Id:" + data.MessageId);
                 }
             });

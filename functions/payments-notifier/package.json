@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Function for notifying clients about payment",
     "main": "app.js",
-    "repository": "https://github.com/awslabs/aws-sam-cli/tree/develop/samcli/local/init/templates/cookiecutter-aws-sam-hello-nodejs",
+    "repository": "https://github.com/sam-rajan/AWS-SAM-Application.git",
     "author": "Sam Rajan",
     "license": "MIT",
     "dependencies": {
