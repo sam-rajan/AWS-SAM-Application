@@ -20,7 +20,7 @@ Parameters:
     Description: Name of the cloud trail log buckets
   ErrorEmailAddress:
     Type: String
-    Default: samjerusalem@gmail.com
+    Default: <Email Address>
     Description: Email address for notifying function errors
   PaymentsTableName:
     Type: String
@@ -274,3 +274,6 @@ Outputs:
   PaymentsDB:
     Description: "Payments Database Arn"
     Value: !GetAtt PaymentsDB.Arn
+  PaymentRetrieverAPI:
+    Description: "API Gateway endpoint URL for Prod stage for PaymentRetriever function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/payments/"
