@@ -7,7 +7,7 @@ This project contains source code and supporting files for an event-driven serve
 
 ### Diagram Explained
 
-This is an event driven payment meta data processing system which would extract payment details meta a file and push it to databse. This application uses different AWS resources including Event Bridge, SNS, SQS, SES, DynamoDb and API Gateway. These resources are defined in the `template.yaml` file in this project. 
+This is an event driven payment meta data processing system which will extract payment details from a file and push it to databse. This application uses different AWS resources including Event Bridge, SNS, SQS, SES, DynamoDb and API Gateway. These resources are defined in the `template.yaml` file in this project. 
 
 1. Assume that a legacy system uploading all the payment metadata in file format to AWS S3 bucket(following file transfer integration style) after processing of payments. And these files are called receipts. The file `sample-receipt` within this project is a sample receipt file. Each line in the file represents a payment and it's attributed separated by tab space. There can be one or N number of payments in a file.
 2. On receiving a file, S3 will log an event in cloud trail and these events are consumed by AWS EventBridge and trigger an AWS step function which has two AWS Lambda functions, **ReceiptsReader** and **PaymentProcessor**.
